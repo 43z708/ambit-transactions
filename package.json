@@ -1,0 +1,20 @@
+{
+  "name": "guildxyz",
+  "version": "0.1.0",
+  "description": "Service from tracking NFT sales.",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "tsx": "^3.9.0",
+    "typescript": "^4.8.3",
+    "web3": "^4.0.3"
+  },
+  "devDependencies": {
+    "npm": "^9.4.1",
+    "prettier": "^2.8.8"
+  },
+  "scripts": {
+    "start": "tsx main.ts"
+  }
+}
