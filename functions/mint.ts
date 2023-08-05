@@ -31,6 +31,10 @@ export async function mint(privateKey:string,account:Web3Account,gasPrice:bigint
 
     console.log("Mint transaction hash: " + receipt.transactionHash);
     console.log("Mint transaction was mined. Block: " + receipt.blockNumber);
+
+    console.log("3秒待ちます")
+    new Promise(resolve => setTimeout(resolve, 3000));
+
   } catch (error) {
     console.error('Error during Mint transaction:', error);
   };

@@ -19,16 +19,18 @@ async function main() {
     return
   }
   // アカウントをランダムに並び替える
-  const randomPrivateKeys = privateKeys.sort((a, b) => 0.5 - Math.random())
-
-  randomPrivateKeys.forEach(async (privateKey,index) => {
-    if (index > 0) {
+  const randomPrivateKeys = shuffle(privateKeys);
+  
+  for(const [index,privateKey] of randomPrivateKeys.entries()) {
+    // envファイルのindex
+    const originalIndex = privateKeys.indexOf(privateKey);
+    // transaction実行
+    await mintAndDeposit(originalIndex + 1,index + 1,"0x" + privateKey)
+    if (randomPrivateKeys.length > 1 && randomPrivateKeys.length - 1 !== index) {
       // 2回目のtransaction以降、20秒から100秒のランダムなウェイトタイム
       await randomWait()
     }
-    // transaction実行
-    await mintAndDeposit("0x" + privateKey)
-  })
+  }
 }
 
 function randomWait() {
@@ -39,26 +41,46 @@ function randomWait() {
   return new Promise(resolve => setTimeout(resolve, waitTime));
 }
 
+function shuffle(array: string[]): string[] {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tempI = array[i];
+      const tempJ = array[j];
+      if (tempI !== undefined && tempJ !== undefined) {
+          array[i] = tempJ;
+          array[j] = tempI;
+      }
+  }
+  return array;
+}
 
-async function mintAndDeposit(privateKey:string) {
+
+
+
+
+async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string) {
   const account = web3.eth.accounts.privateKeyToAccount(privateKey);
   web3.eth.accounts.wallet.add(account);
   web3.eth.defaultAccount = account.address;
 
-  console.log(account.address + "のtransactionを実行します")
+  console.log(currentNum + ". envファイルの" + envNum + "番目のアドレス" + account.address + "のtransactionを実行します")
 
   const gasPrice = await web3.eth.getGasPrice();
   // mint(500USDT生成)
-  // await mint(privateKey,account,gasPrice)
+  await mint(privateKey,account,gasPrice)
 
   // 300USDTをdepositする
-  const depositAmount = "300";
-  await approveAndDeposit(privateKey,account,gasPrice,depositAmount)
+  // const depositAmount = "300";
+  // await approveAndDeposit(privateKey,account,gasPrice,depositAmount)
   
   // 200USDTをsupplyする
+
   const supplyAmount = "200";
   await approveAndSupply(privateKey,account,gasPrice,supplyAmount)
-  
+
+  console.log("3秒待ちます")
+  new Promise(resolve => setTimeout(resolve, 3000));
+
   // 100USDTをborrowする
   const borrowAmount = "100";
   await borrow(privateKey,account,gasPrice,borrowAmount)

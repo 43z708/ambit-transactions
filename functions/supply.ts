@@ -17,6 +17,9 @@ export async function approveAndSupply(privateKey:string,account:Web3Account,gas
     // approve
     await approve(privateKey,account,gasPrice,spender,amount)
 
+    console.log("3秒待ちます")
+    new Promise(resolve => setTimeout(resolve, 3000));
+
     // supply
     await supply(privateKey,account,gasPrice,amount)
   } catch (error) {
