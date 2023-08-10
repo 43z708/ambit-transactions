@@ -37,12 +37,13 @@ async function supply(privateKey:string,account:Web3Account,gasPrice:bigint,toke
     const supplyContract = new web3.eth.Contract(supplyContractInfo.abi, supplyContractInfo.address);
     // @ts-ignore
     const supply = supplyContract.methods.supply(approveContractInfo.address,amount)
-    const gasEstimate = await supply.estimateGas({ from: account.address });
+    const gasEstimate = Number(await supply.estimateGas({ from: account.address }));
+    const gasLimit = Math.floor(gasEstimate * 1.2);  // Add 20% buffer
 
     const tx = {
         from: account.address,
         to: supplyContractInfo.address,
-        gas: gasEstimate,
+        gas: gasLimit,
         gasPrice: gasPrice,
         data: supply.encodeABI()
     };
