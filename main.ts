@@ -19,14 +19,13 @@ async function main() {
     return
   }
   // アカウントをランダムに並び替える
-  const randomPrivateKeys = shuffle(privateKeys);
   
-  for(const [index,privateKey] of randomPrivateKeys.entries()) {
+  for(const [index,privateKey] of shuffle(privateKeys).entries()) {
     // envファイルのindex
     const originalIndex = privateKeys.indexOf(privateKey);
     // transaction実行
     await mintAndDeposit(originalIndex + 1,index + 1,"0x" + privateKey)
-    if (randomPrivateKeys.length > 1 && randomPrivateKeys.length - 1 !== index) {
+    if (privateKeys.length > 1 && privateKeys.length - 1 !== index) {
       // 2回目のtransaction以降、20秒から100秒のランダムなウェイトタイム
       await randomWait()
     }
@@ -34,28 +33,27 @@ async function main() {
 }
 
 function randomWait() {
-  // 20秒から100秒の間のランダムな時間（ミリ秒）を生成
-  const waitTime = (Math.floor(Math.random() * 81) + 20) * 1000;
+  // 20秒から50秒の間のランダムな時間（ミリ秒）を生成
+  const waitTime = (Math.floor(Math.random() * 31) + 20) * 1000;
   console.log(waitTime * 1/1000 + "秒待機...")
 
   return new Promise(resolve => setTimeout(resolve, waitTime));
 }
 
+
 function shuffle(array: string[]): string[] {
-  for (let i = array.length - 1; i > 0; i--) {
+  const shuffledArray = [...array]; // 配列のコピーを作成
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      const tempI = array[i];
-      const tempJ = array[j];
+      const tempI = shuffledArray[i];
+      const tempJ = shuffledArray[j];
       if (tempI !== undefined && tempJ !== undefined) {
-          array[i] = tempJ;
-          array[j] = tempI;
+          shuffledArray[i] = tempJ;
+          shuffledArray[j] = tempI;
       }
   }
-  return array;
+  return shuffledArray;
 }
-
-
-
 
 
 async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string) {
