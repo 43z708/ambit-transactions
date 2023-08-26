@@ -94,7 +94,7 @@ export const approveContractInfo = {
 
  // deposit用contract
  export const depositContractInfo = {
-  address : "0xa27a3b9c0e8124cb71e5c154c9f21b843812c618",
+  address : "0x8a04425d6E4A6347Ae41E45a74715Bf32Bca1570",
   abi : [
     {
         "constant": false,

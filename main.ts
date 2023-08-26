@@ -68,8 +68,8 @@ async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string)
   await mint(privateKey,account,gasPrice)
 
   // 300USDTをdepositする
-  // const depositAmount = "300";
-  // await approveAndDeposit(privateKey,account,gasPrice,depositAmount)
+  const depositAmount = "300";
+  await approveAndDeposit(privateKey,account,gasPrice,depositAmount)
   
   // 200USDTをsupplyする
 

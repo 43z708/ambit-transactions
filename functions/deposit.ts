@@ -16,7 +16,7 @@ export async function approveAndDeposit(privateKey:string,account:Web3Account,ga
     // approve
     // await approve(privateKey,account,gasPrice,depositContractInfo.address,amount)
     
-    // await increaseAllowance(privateKey,account,gasPrice,amount)
+    await increaseAllowance(privateKey,account,gasPrice,amount)
 
     // deposit
     await deposit(privateKey,account,gasPrice,amount)
@@ -30,15 +30,15 @@ export async function approveAndDeposit(privateKey:string,account:Web3Account,ga
 */
 async function deposit(privateKey:string,account:Web3Account,gasPrice:bigint,usdt:string) {
   try {
-    const pid = BigInt(web3.utils.toWei(usdt, 'ether'));
+    const pid = String(web3.utils.toWei(usdt, 'ether'));
 
     const depositContract = new web3.eth.Contract(depositContractInfo.abi, depositContractInfo.address);
     // @ts-ignore
-    const amount:bigint = await depositContract.methods.previewDeposit(pid).call()
+    const amount = String(Number(await depositContract.methods.previewDeposit(pid).call())*0.8)
     // @ts-ignore
     const deposit = depositContract.methods.deposit(pid, amount, account.address)
     const gasEstimate = Number(await deposit.estimateGas({ from: account.address }));
-    const gasLimit = Math.floor(gasEstimate * 1.2);  // Add 20% buffer
+    const gasLimit = gasEstimate * 2;  // Add 20% buffer
 
     const tx = {
         from: account.address,
