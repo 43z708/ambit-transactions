@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
 
 
-import {depositContractInfo} from "../contracts"
+import {depositUsdtContractInfo} from "../contracts"
 
 import {approve, increaseAllowance} from "./approve"
 
@@ -14,9 +14,9 @@ const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545/'); // Bin
 export async function approveAndDeposit(privateKey:string,account:Web3Account,gasPrice:bigint,amount:string) {
   try {
     // approve
-    // await approve(privateKey,account,gasPrice,depositContractInfo.address,amount)
+    // await approve(privateKey,account,gasPrice,depositUsdtContractInfo.address,amount)
     
-    await increaseAllowance(privateKey,account,gasPrice,amount)
+    await increaseAllowance(privateKey,account,gasPrice,amount,"depoUSDT")
 
     // deposit
     await deposit(privateKey,account,gasPrice,amount)
@@ -32,17 +32,17 @@ async function deposit(privateKey:string,account:Web3Account,gasPrice:bigint,usd
   try {
     const pid = String(web3.utils.toWei(usdt, 'ether'));
 
-    const depositContract = new web3.eth.Contract(depositContractInfo.abi, depositContractInfo.address);
+    const depositContract = new web3.eth.Contract(depositUsdtContractInfo.abi, depositUsdtContractInfo.address);
     // @ts-ignore
     const amount = String(Number(await depositContract.methods.previewDeposit(pid).call())*0.8)
     // @ts-ignore
-    const deposit = depositContract.methods.deposit(pid, amount, account.address)
+    const deposit = depositContract.methods.deposit(pid, amount)
     const gasEstimate = Number(await deposit.estimateGas({ from: account.address }));
     const gasLimit = gasEstimate * 2;  // Add 20% buffer
 
     const tx = {
         from: account.address,
-        to: depositContractInfo.address,
+        to: depositUsdtContractInfo.address,
         gas: gasLimit,
         gasPrice: gasPrice,
         data: deposit.encodeABI()

@@ -2,7 +2,7 @@ import Web3, { Address } from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
 
 
-import {borrowContractInfo} from "../contracts"
+import {borrowUsdtContractInfo} from "../contracts"
 
 const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545/'); // Binance Smart Chain Testnet
 
@@ -13,7 +13,7 @@ export async function borrow(privateKey:string,account:Web3Account,gasPrice:bigi
   try {
     const amount = BigInt(web3.utils.toWei(tokenAmount, 'ether'));
 
-    const borrowContract = new web3.eth.Contract(borrowContractInfo.abi, borrowContractInfo.address);
+    const borrowContract = new web3.eth.Contract(borrowUsdtContractInfo.abi, borrowUsdtContractInfo.address);
     // @ts-ignore
     const borrow = borrowContract.methods.borrow(amount)
     const gasEstimate = Number(await borrow.estimateGas({ from: account.address }));
@@ -22,7 +22,7 @@ export async function borrow(privateKey:string,account:Web3Account,gasPrice:bigi
 
     const tx = {
         from: account.address,
-        to: borrowContractInfo.address,
+        to: borrowUsdtContractInfo.address,
         gas: gasLimit,
         gasPrice: gasPrice,
         data: borrow.encodeABI()

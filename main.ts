@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 import {mint} from "./functions/mint"
 import {approveAndDeposit} from "./functions/deposit"
-import { approveAndSupply } from './functions/supply';
+import { supply,approveAndSupply } from './functions/supply';
 import { borrow } from './functions/borrow';
 
 dotenv.config();
@@ -34,7 +34,7 @@ async function main() {
 
 function randomWait() {
   // 20秒から50秒の間のランダムな時間（ミリ秒）を生成
-  const waitTime = (Math.floor(Math.random() * 31) + 20) * 1000;
+  const waitTime = (Math.floor(Math.random() * 15) + 10) * 1000;
   console.log(waitTime * 1/1000 + "秒待機...")
 
   return new Promise(resolve => setTimeout(resolve, waitTime));
@@ -64,7 +64,7 @@ async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string)
   console.log(currentNum + ". envファイルの" + envNum + "番目のアドレス" + account.address + "のtransactionを実行します")
 
   const gasPrice = await web3.eth.getGasPrice();
-  // mint(500USDT生成)
+  // mint(500USDT,1eth,0.1btc生成)
   await mint(privateKey,account,gasPrice)
 
   // 300USDTをdepositする
@@ -73,8 +73,15 @@ async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string)
   
   // 200USDTをsupplyする
 
-  const supplyAmount = "200";
-  await approveAndSupply(privateKey,account,gasPrice,supplyAmount)
+  const supplyUsdtAmount = "200";
+  await approveAndSupply(privateKey,account,gasPrice,supplyUsdtAmount,"USDT")
+  
+  // 0.1BTCをsupplyする
+  const supplyBtcAmount = "0.1";
+  await approveAndSupply(privateKey,account,gasPrice,supplyBtcAmount,"BTC")
+  // 0.1BTCをsupplyする
+  const supplyEthAmount = "1";
+  await approveAndSupply(privateKey,account,gasPrice,supplyEthAmount,"ETH")
 
   console.log("3秒待ちます")
   new Promise(resolve => setTimeout(resolve, 3000));
