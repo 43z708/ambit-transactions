@@ -15,6 +15,7 @@
     "prettier": "^2.8.8"
   },
   "scripts": {
-    "start": "tsx main.ts"
+    "start": "tsx main.ts",
+    "balance": "tsx functions/balance.ts"
   }
 }

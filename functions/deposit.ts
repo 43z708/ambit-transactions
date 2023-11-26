@@ -38,7 +38,7 @@ async function deposit(privateKey:string,account:Web3Account,gasPrice:bigint,usd
     // @ts-ignore
     const deposit = depositContract.methods.deposit(pid, amount)
     const gasEstimate = Number(await deposit.estimateGas({ from: account.address }));
-    const gasLimit = gasEstimate * 2;  // Add 20% buffer
+    const gasLimit = Math.floor(gasEstimate * 2)  // Add 20% buffer
 
     const tx = {
         from: account.address,

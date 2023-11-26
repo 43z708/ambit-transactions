@@ -17,7 +17,7 @@ export async function borrow(privateKey:string,account:Web3Account,gasPrice:bigi
     // @ts-ignore
     const borrow = borrowContract.methods.borrow(amount)
     const gasEstimate = Number(await borrow.estimateGas({ from: account.address }));
-    const gasLimit = Math.floor(gasEstimate * 1.2);  // Add 20% buffer
+    const gasLimit = Math.floor(gasEstimate * 2);  // Add 20% buffer
 
 
     const tx = {

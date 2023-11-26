@@ -7,9 +7,7 @@ import {mint} from "./functions/mint"
 import {approveAndDeposit} from "./functions/deposit"
 import { supply,approveAndSupply } from './functions/supply';
 import { borrow } from './functions/borrow';
-
-dotenv.config();
-const privateKeys = process.env.PRIVATE_KEYS?.split(',') ?? [];
+import { privateKeys } from './functions/accounts';
 
 const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545/'); // Binance Smart Chain Testnet
 
@@ -34,7 +32,7 @@ async function main() {
 
 function randomWait() {
   // 20秒から50秒の間のランダムな時間（ミリ秒）を生成
-  const waitTime = (Math.floor(Math.random() * 15) + 10) * 1000;
+  const waitTime = (Math.floor(Math.random() * 5) + 5) * 1000;
   console.log(waitTime * 1/1000 + "秒待機...")
 
   return new Promise(resolve => setTimeout(resolve, waitTime));
@@ -79,9 +77,12 @@ async function mintAndDeposit(envNum:number,currentNum:number,privateKey:string)
   // 0.1BTCをsupplyする
   const supplyBtcAmount = "0.1";
   await approveAndSupply(privateKey,account,gasPrice,supplyBtcAmount,"BTC")
-  // 0.1BTCをsupplyする
+  // 1ETHをsupplyする
   const supplyEthAmount = "1";
   await approveAndSupply(privateKey,account,gasPrice,supplyEthAmount,"ETH")
+  // 10AMBTをsupplyする
+  const supplyAmbtAmount = "10";
+  await approveAndSupply(privateKey,account,gasPrice,supplyAmbtAmount,"AMBT")
 
   console.log("3秒待ちます")
   new Promise(resolve => setTimeout(resolve, 3000));

@@ -2,7 +2,7 @@ import Web3, { Address } from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
 
 
-import {supplyUsdtContractInfo,approveUsdtContractInfo,approveBtcContractInfo,supplyBtcContractInfo,approveEthContractInfo,supplyEthContractInfo} from "../contracts"
+import {supplyUsdtContractInfo,approveUsdtContractInfo,approveBtcContractInfo,supplyBtcContractInfo,approveEthContractInfo,supplyEthContractInfo,approveAmbtContractInfo,supplyAmbtContractInfo} from "../contracts"
 
 import {approve, increaseAllowance} from "./approve"
 
@@ -31,7 +31,7 @@ export async function approveAndSupply(privateKey:string,account:Web3Account,gas
 */
 export async function supply(privateKey:string,account:Web3Account,gasPrice:bigint,tokenAmount:string,ticker: string) {
   try {
-    const amount = BigInt(web3.utils.toWei(tokenAmount, 'ether'));
+    const amount = ticker === "AMBT" ? "1000000000" : BigInt(web3.utils.toWei(tokenAmount, 'ether'));
     
     const contractAbi = (() => {
       switch (ticker) {
@@ -41,6 +41,8 @@ export async function supply(privateKey:string,account:Web3Account,gasPrice:bigi
           return supplyBtcContractInfo.abi
         case "ETH" :
           return supplyEthContractInfo.abi
+        case "AMBT" :
+          return supplyAmbtContractInfo.abi
         default :
           return supplyUsdtContractInfo.abi
       }
@@ -54,6 +56,8 @@ export async function supply(privateKey:string,account:Web3Account,gasPrice:bigi
           return supplyBtcContractInfo.address
         case "ETH" :
           return supplyEthContractInfo.address
+        case "AMBT" :
+          return supplyAmbtContractInfo.address
         default :
           return supplyUsdtContractInfo.address
       }
@@ -66,6 +70,8 @@ export async function supply(privateKey:string,account:Web3Account,gasPrice:bigi
           return approveBtcContractInfo.address
         case "ETH" :
           return approveEthContractInfo.address
+        case "AMBT" :
+          return approveAmbtContractInfo.address
         default :
           return supplyUsdtContractInfo.address
       }
@@ -75,7 +81,7 @@ export async function supply(privateKey:string,account:Web3Account,gasPrice:bigi
     // @ts-ignore
     const supply = supplyContract.methods.supply(approvecontractAddress,amount)
     const gasEstimate = Number(await supply.estimateGas({ from: account.address }));
-    const gasLimit = Math.floor(gasEstimate * 1.2);  // Add 20% buffer
+    const gasLimit = Math.floor(gasEstimate * 2);  // Add 20% buffer
 
     const tx = {
         from: account.address,

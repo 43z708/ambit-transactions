@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
 
 
-import {approveBtcContractInfo, approveEthContractInfo, approveUsdtContractInfo, depositUsdtContractInfo, supplyUsdtContractInfo} from "../contracts"
+import {approveBtcContractInfo, approveEthContractInfo, approveUsdtContractInfo, approveAmbtContractInfo} from "../contracts"
 
 const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545/'); // Binance Smart Chain Testnet
 
@@ -51,13 +51,15 @@ export async function increaseAllowance(privateKey:string,account:Web3Account,ga
     const spender = (() => {
       switch (ticker) {
         case "depoUSDT" :
-          return "0x02edbff39129F3f40AAf30b30a4298519de9Cd32"
+          return "0xb6D109220dFf3b542cD9390DA3A3Dd746e9Dc7c6"
         case "USDT" :
-          return "0xBB2a93533C77df4ADEd8270f2CE884917e80d91E"
+          return "0x0b985D63132CDE8fC7E4029782cC32879C381c5c"
         case "BTC" :
-          return "0xe7BC40977B0CCEBA1814FF21c57F6e621eedBF4F"
+          return "0xb64aEC12Ace2667be60be77bD50ca61616A223Ca"
         case "ETH" :
-          return "0x9b455f3325F8F8A233A46140fBCE798965B994a7"
+          return "0x6E4997F61b138253F5e2910AA70e2878121c962b"
+        case "AMBT" :
+          return "0x17cF85504e1Bb975Fe5649180b33B58F8A916905"
         default :
           return ""
       }
@@ -72,6 +74,8 @@ export async function increaseAllowance(privateKey:string,account:Web3Account,ga
           return approveBtcContractInfo.abi
         case "ETH" :
           return approveEthContractInfo.abi
+        case "AMBT" :
+          return approveAmbtContractInfo.abi
         default :
           return approveUsdtContractInfo.abi
       }
@@ -85,6 +89,8 @@ export async function increaseAllowance(privateKey:string,account:Web3Account,ga
           return approveBtcContractInfo.address
         case "ETH" :
           return approveEthContractInfo.address
+        case "AMBT" :
+          return approveAmbtContractInfo.address
         default :
           return approveUsdtContractInfo.address
       }
@@ -94,7 +100,7 @@ export async function increaseAllowance(privateKey:string,account:Web3Account,ga
 
     const addedValue = web3.utils.toWei(amount, 'ether');
     // @ts-ignore
-    const increaseAllowance = approveContract.methods.increaseAllowance(spender, addedValue)
+    const increaseAllowance = approveContract.methods.approve(spender, addedValue)
     const gasEstimate = await increaseAllowance.estimateGas({ from: account.address });
 
     const tx = {
